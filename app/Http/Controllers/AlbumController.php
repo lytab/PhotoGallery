@@ -16,7 +16,8 @@ class AlbumController extends Controller
      */
     public function index()
     {
-       return view('albums.index');
+        $albums=Album::with('photos')->get();
+       return view('albums.index')->with('albums',$albums);
     }
 
     /**
@@ -53,11 +54,10 @@ class AlbumController extends Controller
         $fileNameToStore=$fileName.'_'.time().'.'.$extension;
         //Upload Image
         $path = $request->file('cover_image')->storeAs('public/album_covers',$fileNameToStore);
-        return $path;
         $album=new Album();
         $album->name=$request->name;
         $album->desc=$request->desc;
-        $album->cover_image=$request->cover_image;
+        $album->cover_image=$fileNameToStore;
         $album->save();
         return redirect()->back()->with('status', "Album Created !!");
     }
