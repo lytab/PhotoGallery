@@ -5,7 +5,7 @@
   <div class="grid-container">
         <div class="grid-x grid-padding-x">
         {{Form::text('name',null,['placeholder'=>'Album Name'])}}
-        {{Form::text('desc',null,['placeholder'=>'Album Description'])}}
+        {{Form::textarea('desc',null,['placeholder'=>'Album Description'])}}
        {{Form::file('cover_image')}} 
        
 

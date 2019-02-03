@@ -68,9 +68,10 @@ class AlbumController extends Controller
      * @param  \App\Album  $album
      * @return \Illuminate\Http\Response
      */
-    public function show(Album $album)
+    public function show($id)
     {
-        //
+        $album=Album::with('photos')->findOrFail($id);
+        return view('albums.show')->with('album', $album);
     }
 
     /**

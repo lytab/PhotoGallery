@@ -22,9 +22,9 @@ class PhotoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($album_id)
     {
-        //
+        return view('photos.create')->with('album_id', $album_id);
     }
 
     /**
@@ -35,7 +35,29 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules=[
+            'title'=>'required',
+            'photo'=>'image|max:1999'
+        ];
+       
+       
+      
+        //$this->validate($request,$rules);
+        $fileNameWithExt=$request->file('photo')->getClientOriginalName();
+        $fileName=pathinfo($fileNameWithExt,PATHINFO_FILENAME);
+        $extension=$request->file('photo')->getClientOriginalExtension();
+        //create new filename
+        $fileNameToStore=$fileName.'_'.time().'.'.$extension;
+        //Upload Image
+        $path = $request->file('photo')->storeAs('public/photos/'.$request->album_id,$fileNameToStore);
+        $album=new Photo();
+        $album->title=$request->title;
+        $album->desc=$request->desc;
+        $album->album_id=$request->album_id;
+        $album->photo=$fileNameToStore;
+        $album->size=$request->file('photo')->getClientSize();
+        $album->save();
+        return redirect(('/albums'.'/'.$request->album_id))->with('status', "Photo Uploaded !!");
     }
 
     /**
