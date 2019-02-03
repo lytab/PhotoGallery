@@ -14,7 +14,7 @@ class AlbumController extends Controller
      */
     public function index()
     {
-        //
+       return view('albums.index');
     }
 
     /**
@@ -24,7 +24,7 @@ class AlbumController extends Controller
      */
     public function create()
     {
-        //
+        return view('albums.create');
     }
 
     /**
@@ -35,7 +35,18 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules=[
+            'name'=>'required',
+            'desc'=>'required',
+            'cover_image'=>'required'
+        ];
+        $this->validate($request,$rules);
+        $album=new Album();
+        $album->name=$request->name;
+        $album->desc=$request->desc;
+        $album->cover_image=$request->cover_image;
+        $album->save();
+        return redirect()->back()->with('status', "Album Created !!");
     }
 
     /**
