@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Album;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
@@ -35,12 +37,23 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
+       
         $rules=[
             'name'=>'required',
-            'desc'=>'required',
-            'cover_image'=>'required'
+            'cover_image'=>'image|max:1999'
         ];
-        $this->validate($request,$rules);
+       
+       
+      
+        //$this->validate($request,$rules);
+        $fileNameWithExt=$request->file('cover_image')->getClientOriginalName();
+        $fileName=pathinfo($fileNameWithExt,PATHINFO_FILENAME);
+        $extension=$request->file('cover_image')->getClientOriginalExtension();
+        //create new filename
+        $fileNameToStore=$fileName.'_'.time().'.'.$extension;
+        //Upload Image
+        $path = $request->file('cover_image')->storeAs('public/album_covers',$fileNameToStore);
+        return $path;
         $album=new Album();
         $album->name=$request->name;
         $album->desc=$request->desc;
